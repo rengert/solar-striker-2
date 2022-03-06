@@ -19,7 +19,7 @@ class MainGameState extends State<MainGamePage> {
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
-                padding: const EdgeInsets.all(32.0),
+                padding: const EdgeInsets.all(25.0),
                 child: Joypad(onDirectionChanged: onJoypadDirectionChanged),
               ),
             )

@@ -21,24 +21,24 @@ class JoypadState extends State<Joypad> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100,
-      width: 100,
+      height: 80,
+      width: 80,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(40),
         ),
         child: GestureDetector(
           child: Container(
             decoration: BoxDecoration(
               color: const Color(0x88ffffff),
-              borderRadius: BorderRadius.circular(50),
+              borderRadius: BorderRadius.circular(40),
             ),
             child: Center(
               child: Transform.translate(
                 offset: delta,
                 child: SizedBox(
-                  height: 70,
-                  width: 70,
+                  height: 60,
+                  width: 60,
                   child: Container(
                     decoration: BoxDecoration(
                       color: const Color(0xcc111010),
@@ -97,7 +97,7 @@ class JoypadState extends State<Joypad> {
   }
 
   void calculateDelta(Offset offset) {
-    final newDelta = offset - const Offset(50, 50);
+    final newDelta = offset - const Offset(40, 40);
     updateDelta(
       Offset.fromDirection(
         newDelta.direction,
