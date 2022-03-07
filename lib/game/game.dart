@@ -4,6 +4,7 @@ import 'package:flame/parallax.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:solarstriker/game/ship.dart';
+import 'package:solarstriker/models/direction.dart';
 
 class SolarStrikerGame extends FlameGame {
   late Ship _ship;
@@ -16,17 +17,12 @@ class SolarStrikerGame extends FlameGame {
 
     await _addBackground();
 
-    var spriteSheet = SpriteSheet.fromColumnsAndRows(
-      image: images.fromCache('simpleSpace_tilesheet@2.png'),
-      columns: 8,
-      rows: 6,
-    );
-
     _ship = Ship(
-      sprite: spriteSheet.getSpriteById(spaceship.spriteId),
-      size: Vector2(64, 64),
+      image: await images.load('ship.png'),
+      size: Vector2(32, 32),
       position: canvasSize / 2,
     );
+    add(_ship);
   }
 
   Future<void> _addBackground() async {
@@ -40,5 +36,9 @@ class SolarStrikerGame extends FlameGame {
       velocityMultiplierDelta: Vector2(0, 1.5),
     );
     add(_background);
+  }
+
+  void move(Direction direction) {
+    _ship.move(direction);
   }
 }

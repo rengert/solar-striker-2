@@ -12,9 +12,10 @@ class MainGamePage extends StatefulWidget {
 }
 
 class MainGameState extends State<MainGamePage> {
+  var game = SolarStrikerGame();
+
   @override
   Widget build(BuildContext context) {
-    var game = SolarStrikerGame();
     return Scaffold(
         backgroundColor: const Color.fromRGBO(125, 125, 255, 1),
         body: Stack(
@@ -32,6 +33,6 @@ class MainGameState extends State<MainGamePage> {
   }
 
   void onJoypadDirectionChanged(Direction direction) {
-    // TODO 2
+    game.move(direction);
   }
 }
