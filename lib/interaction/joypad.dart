@@ -6,9 +6,14 @@ import 'package:solarstriker/models/direction.dart';
 
 
 class Joypad extends StatefulWidget {
-  final ValueChanged<Direction>? onDirectionChanged;
+  final ValueChanged<Direction> onDirectionChanged;
+  final ValueChanged<Offset> onDeltaChanged;
 
-  const Joypad({Key? key, this.onDirectionChanged}) : super(key: key);
+  const Joypad({
+    Key? key,
+    required this.onDirectionChanged,
+    required this.onDeltaChanged
+  }) : super(key: key);
 
   @override
   JoypadState createState() => JoypadState();
@@ -63,9 +68,9 @@ class JoypadState extends State<Joypad> {
 
     if (newDirection != direction) {
       direction = newDirection;
-      widget.onDirectionChanged!(direction);
+      widget.onDirectionChanged(direction);
     }
-
+    widget.onDeltaChanged(newDelta);
     setState(() {
       delta = newDelta;
     });

@@ -25,7 +25,10 @@ class MainGameState extends State<MainGamePage> {
               alignment: Alignment.bottomRight,
               child: Padding(
                 padding: const EdgeInsets.all(25.0),
-                child: Joypad(onDirectionChanged: onJoypadDirectionChanged),
+                child: Joypad(
+                  onDirectionChanged: onJoypadDirectionChanged,
+                  onDeltaChanged: onJoypadDeltaChanged,
+                ),
               ),
             )
           ],
@@ -33,6 +36,10 @@ class MainGameState extends State<MainGamePage> {
   }
 
   void onJoypadDirectionChanged(Direction direction) {
-    game.move(direction);
+    // game.move(direction);
+  }
+
+  void onJoypadDeltaChanged(Offset delta) {
+    game.move(delta);
   }
 }

@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
-import 'package:solarstriker/models/direction.dart';
 
 class Ship extends SpriteAnimationComponent {
   late SpriteAnimation _moveMuchLeft;
@@ -10,17 +9,25 @@ class Ship extends SpriteAnimationComponent {
   late SpriteAnimation _moveStraight;
   late SpriteAnimation _moveRight;
   late SpriteAnimation _moveMuchRight;
+  late Vector2 _maxPosition = Vector2.zero();
+
+  Offset _offset = Offset.zero;
+  Vector2 _moveDirection = Vector2.zero();
+
 
   Ship({
     required Image image,
     required Vector2 position,
     required Vector2 size,
+    required Vector2 maxPosition,
   }) : super(position: position, size: size) {
     final spriteSheet = SpriteSheet.fromColumnsAndRows(
       image: image,
       rows: 5,
       columns: 2,
     );
+
+    _maxPosition = maxPosition;
 
     _moveMuchLeft = spriteSheet.createAnimation(row: 0, stepTime: 0.125);
     _moveLeft = spriteSheet.createAnimation(row: 1, stepTime: 0.125);
@@ -31,23 +38,34 @@ class Ship extends SpriteAnimationComponent {
     animation = _moveStraight;
   }
 
-  void move(Direction direction) {
-    switch(direction) {
-      case Direction.none:
-        animation = _moveStraight;
-        break;
-      case Direction.up:
-        // TODO: Handle this case.
-        break;
-      case Direction.down:
-        // TODO: Handle this case.
-        break;
-      case Direction.left:
-        animation = _moveMuchLeft;
-        break;
-      case Direction.right:
-        animation = _moveMuchRight;
-        break;
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    position += _moveDirection.normalized() * 100 * dt;
+    position.clamp(
+      Vector2.zero() - size / 2,
+      _maxPosition - size / 2,
+    );
+  }
+
+  void move(Offset delta) {
+    _offset = delta;
+    _moveDirection = Vector2(delta.dx, 0);
+    _setDirection(delta);
+  }
+
+  void _setDirection(Offset offset) {
+    if (offset.dx > 20) {
+      animation = _moveMuchRight;
+    } else if (offset.dx > 5) {
+      animation = _moveRight;
+    } else if (offset.dx < -20) {
+      animation = _moveMuchLeft;
+    } else if (offset.dx < -5) {
+      animation = _moveLeft;
+    } else {
+      animation = _moveStraight;
     }
   }
 }

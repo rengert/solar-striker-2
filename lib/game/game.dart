@@ -21,6 +21,7 @@ class SolarStrikerGame extends FlameGame {
       image: await images.load('ship.png'),
       size: Vector2(32, 32),
       position: canvasSize / 2,
+      maxPosition: canvasSize,
     );
     add(_ship);
   }
@@ -38,7 +39,7 @@ class SolarStrikerGame extends FlameGame {
     add(_background);
   }
 
-  void move(Direction direction) {
-    _ship.move(direction);
+  void move(Offset delta) {
+    _ship.move(delta);
   }
 }
