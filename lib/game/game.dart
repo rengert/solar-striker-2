@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
@@ -29,12 +31,7 @@ class SolarStrikerGame extends FlameGame
     if(_sinceLastEnemy > 5) {
       _sinceLastEnemy = 0;
 
-      var enemy = Enemy(
-        image: images.fromCache('laser-bolts.png'),
-        size: Vector2(64, 64),
-        position: Vector2(_ship!.x + 8, _ship!.y - 500),
-      );
-      add(enemy);
+      _spawnEnemy();
     }
   }
 
@@ -54,7 +51,8 @@ class SolarStrikerGame extends FlameGame
     await images.loadAll([
       'desert-background-looped.png',
       'ship.png',
-      'laser-bolts.png'
+      'laser-bolts.png',
+      'enemy-big.png'
     ]);
   }
 
@@ -67,6 +65,16 @@ class SolarStrikerGame extends FlameGame
         onFire: _shipFired
     );
     add(_ship!);
+  }
+
+  void _spawnEnemy() {
+    var random = Random();
+    var enemy = Enemy(
+      image: images.fromCache('enemy-big.png'),
+      size: Vector2(32, 32),
+      position: Vector2(random.nextDouble() * canvasSize.x, 0),
+    );
+    add(enemy);
   }
 
   Future<void> _addBackground() async {

@@ -56,7 +56,7 @@ class Ship extends SpriteAnimationComponent
 
     _sinceLastShot += dt;
     if(_autoFire) {
-      if(_sinceLastShot > 1) {
+      if(_sinceLastShot > .175) {
         _sinceLastShot = 0;
         _fire();
       }

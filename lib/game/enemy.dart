@@ -18,10 +18,10 @@ class Enemy extends SpriteAnimationComponent
   }) : super(position: position, size: size) {
     final spriteSheet = SpriteSheet.fromColumnsAndRows(
       image: image,
-      rows: 2,
+      rows: 1,
       columns: 2,
     );
-    animation = spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed);
+    animation = spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed);
    }
 
   @override
@@ -36,7 +36,7 @@ class Enemy extends SpriteAnimationComponent
   void update(double dt) {
     super.update(dt);
 
-    position += Vector2(0, 20 * dt);
+    position += Vector2(0, 15 * dt);
 
     if(position.y > 2000) {
       remove(this);
