@@ -1,10 +1,12 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/foundation.dart';
 
-class Ship extends SpriteAnimationComponent with ChangeNotifier {
+class Ship extends SpriteAnimationComponent
+    with HasHitboxes, Collidable {
   final ValueChanged<Vector2> onFire;
 
   final double _animationSpeed = 0.125;
@@ -59,6 +61,14 @@ class Ship extends SpriteAnimationComponent with ChangeNotifier {
         _fire();
       }
     }
+  }
+
+  @override
+  void onMount() {
+    super.onMount();
+
+    final shape = HitboxCircle(normalizedRadius: 0.8);
+    addHitbox(shape);
   }
 
   void move(Offset delta) {

@@ -3,13 +3,15 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
-import 'package:flutter/foundation.dart';
+import 'package:solarstriker/game/game.dart';
+import 'package:solarstriker/game/rocket.dart';
 
-class Rocket extends SpriteAnimationComponent
-    with HasHitboxes, Collidable  {
+class Enemy extends SpriteAnimationComponent
+    with HasGameRef<SolarStrikerGame>, HasHitboxes, Collidable {
+
   final double _animationSpeed = 0.125;
 
-  Rocket({
+  Enemy({
     required Image image,
     required Vector2 position,
     required Vector2 size,
@@ -34,10 +36,18 @@ class Rocket extends SpriteAnimationComponent
   void update(double dt) {
     super.update(dt);
 
-    position -= Vector2(0, 100 * dt);
+    position += Vector2(0, 20 * dt);
 
-    if(position.y < 0) {
+    if(position.y > 2000) {
       remove(this);
     }
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
+    if (other is Rocket) {
+      gameRef.remove(this);
+    }
+    super.onCollision(intersectionPoints, other);
   }
 }

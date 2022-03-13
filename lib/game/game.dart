@@ -2,11 +2,15 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:solarstriker/game/enemy.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
 
-class SolarStrikerGame extends FlameGame {
+class SolarStrikerGame extends FlameGame
+    with HasCollidables {
   Ship? _ship;
+
+  double _sinceLastEnemy = 0;
 
   @override
   Future<void> onLoad() async {
@@ -15,6 +19,23 @@ class SolarStrikerGame extends FlameGame {
     await _loadStuff();
     await _addBackground();
     _addShip();
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    _sinceLastEnemy += dt;
+    if(_sinceLastEnemy > 5) {
+      _sinceLastEnemy = 0;
+
+      var enemy = Enemy(
+        image: images.fromCache('laser-bolts.png'),
+        size: Vector2(64, 64),
+        position: Vector2(_ship!.x + 8, _ship!.y - 500),
+      );
+      add(enemy);
+    }
   }
 
   void move(Offset delta) {
