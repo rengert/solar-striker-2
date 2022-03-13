@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:solarstriker/game/game.dart';
@@ -30,6 +32,31 @@ class MainGameState extends State<MainGamePage> {
                   onDeltaChanged: onJoypadDeltaChanged,
                 ),
               ),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: GestureDetector(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0x88ffffff),
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                      ),
+                      onPanDown: startFire,
+                      onPanEnd: stopFire,
+                    ),
+                  ),
+                ),
+              ),
             )
           ],
         ));
@@ -41,5 +68,12 @@ class MainGameState extends State<MainGamePage> {
 
   void onJoypadDeltaChanged(Offset delta) {
     game.move(delta);
+  }
+
+  void startFire(DragDownDetails details) {
+    game.fire();
+  }
+  void stopFire(DragEndDetails details) {
+    game.stopFire();
   }
 }

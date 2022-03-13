@@ -2,8 +2,13 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:flutter/foundation.dart';
 
-class Ship extends SpriteAnimationComponent {
+class Ship extends SpriteAnimationComponent with ChangeNotifier {
+  final ValueChanged<Vector2> onFire;
+
+  final double _animationSpeed = 0.125;
+  bool _autoFire = false;
   late SpriteAnimation _moveMuchLeft;
   late SpriteAnimation _moveLeft;
   late SpriteAnimation _moveStraight;
@@ -11,15 +16,17 @@ class Ship extends SpriteAnimationComponent {
   late SpriteAnimation _moveMuchRight;
   late Vector2 _maxPosition = Vector2.zero();
 
-  Offset _offset = Offset.zero;
   Vector2 _moveDirection = Vector2.zero();
 
+  double _sinceLastShot = 0;
 
   Ship({
     required Image image,
     required Vector2 position,
     required Vector2 size,
     required Vector2 maxPosition,
+    required this.onFire,
+    
   }) : super(position: position, size: size) {
     final spriteSheet = SpriteSheet.fromColumnsAndRows(
       image: image,
@@ -29,30 +36,47 @@ class Ship extends SpriteAnimationComponent {
 
     _maxPosition = maxPosition;
 
-    _moveMuchLeft = spriteSheet.createAnimation(row: 0, stepTime: 0.125);
-    _moveLeft = spriteSheet.createAnimation(row: 1, stepTime: 0.125);
-    _moveStraight = spriteSheet.createAnimation(row: 2, stepTime: 0.125);
-    _moveRight = spriteSheet.createAnimation(row: 3, stepTime: 0.125);
-    _moveMuchRight = spriteSheet.createAnimation(row: 4, stepTime: 0.125);
+    _moveMuchLeft = spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed);
+    _moveLeft = spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed);
+    _moveStraight = spriteSheet.createAnimation(row: 2, stepTime: _animationSpeed);
+    _moveRight = spriteSheet.createAnimation(row: 3, stepTime: _animationSpeed);
+    _moveMuchRight = spriteSheet.createAnimation(row: 4, stepTime: _animationSpeed);
 
     animation = _moveStraight;
-  }
+   }
 
   @override
   void update(double dt) {
     super.update(dt);
 
-    position += _moveDirection.normalized() * 100 * dt;
-    position.clamp(
-      Vector2.zero() - size / 2,
-      _maxPosition - size / 2,
-    );
+    position += _moveDirection * 5 * dt;
+    position.clamp(Vector2.zero() - size / 2, _maxPosition - size / 2);
+
+    _sinceLastShot += dt;
+    if(_autoFire) {
+      if(_sinceLastShot > 1) {
+        _sinceLastShot = 0;
+        _fire();
+      }
+    }
   }
 
   void move(Offset delta) {
-    _offset = delta;
     _moveDirection = Vector2(delta.dx, 0);
     _setDirection(delta);
+  }
+
+
+  void setAutoFire() {
+    _autoFire = true;
+  }
+
+  void stopAutoFire() {
+    _autoFire = false;
+  }
+
+  void _fire() {
+    onFire(position);
   }
 
   void _setDirection(Offset offset) {
