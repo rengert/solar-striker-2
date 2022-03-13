@@ -12,20 +12,38 @@ class SolarStrikerGame extends FlameGame {
   Future<void> onLoad() async {
     super.onLoad();
 
+    await _loadStuff();
+    await _addBackground();
+    _addShip();
+  }
+
+  void move(Offset delta) {
+    _ship?.move(delta);
+  }
+
+  void fire() {
+    _ship?.setAutoFire();
+  }
+
+  void stopFire() {
+    _ship?.stopAutoFire();
+  }
+
+  Future<void> _loadStuff() async {
     await images.loadAll([
       'desert-background-looped.png',
       'ship.png',
       'laser-bolts.png'
     ]);
+  }
 
-    await _addBackground();
-
+  void _addShip() {
     _ship = Ship(
-      image: images.fromCache('ship.png'),
-      size: Vector2(32, 32),
-      position: Vector2(canvasSize.x / 2, canvasSize.y - 150),
-      maxPosition: canvasSize,
-      onFire: _shipFired
+        image: images.fromCache('ship.png'),
+        size: Vector2(32, 32),
+        position: Vector2(canvasSize.x / 2, canvasSize.y - 150),
+        maxPosition: canvasSize,
+        onFire: _shipFired
     );
     add(_ship!);
   }
@@ -41,18 +59,6 @@ class SolarStrikerGame extends FlameGame {
       velocityMultiplierDelta: Vector2(0, 1.5),
     );
     add(_background);
-  }
-
-  void move(Offset delta) {
-    _ship?.move(delta);
-  }
-
-  void fire() {
-    _ship?.setAutoFire();
-  }
-
-  void stopFire() {
-    _ship?.stopAutoFire();
   }
 
   void _shipFired(Vector2 position) {
