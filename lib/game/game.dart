@@ -62,4 +62,11 @@ class SolarStrikerGame extends FlameGame {
     );
     add(rocket);
   }
+
+  @override
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+
+    _ship.position = Vector2(canvasSize.x / 2, canvasSize.y - 100);
+  }
 }
