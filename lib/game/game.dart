@@ -1,32 +1,33 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
-import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
-import 'package:solarstriker/models/direction.dart';
 
 class SolarStrikerGame extends FlameGame {
-  late Ship _ship;
+  Ship? _ship;
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
+
     await images.loadAll([
       'desert-background-looped.png',
-      'ship.png'
+      'ship.png',
+      'laser-bolts.png'
     ]);
 
     await _addBackground();
 
     _ship = Ship(
-      image: await images.load('ship.png'),
+      image: images.fromCache('ship.png'),
       size: Vector2(32, 32),
       position: Vector2(canvasSize.x / 2, canvasSize.y - 150),
       maxPosition: canvasSize,
       onFire: _shipFired
     );
-    add(_ship);
+    add(_ship!);
   }
 
   Future<void> _addBackground() async {
@@ -43,22 +44,22 @@ class SolarStrikerGame extends FlameGame {
   }
 
   void move(Offset delta) {
-    _ship.move(delta);
+    _ship?.move(delta);
   }
 
   void fire() {
-    _ship.setAutoFire();
+    _ship?.setAutoFire();
   }
 
   void stopFire() {
-    _ship.stopAutoFire();
+    _ship?.stopAutoFire();
   }
 
   void _shipFired(Vector2 position) {
     var rocket = Rocket(
-        image: images.fromCache('ship.png'),
-        size: Vector2(32, 32),
-        position: Vector2(_ship.x, _ship.y - 20),
+        image: images.fromCache('laser-bolts.png'),
+        size: Vector2(16, 16),
+        position: Vector2(_ship!.x + 8, _ship!.y - 20),
     );
     add(rocket);
   }
@@ -67,6 +68,6 @@ class SolarStrikerGame extends FlameGame {
   void onGameResize(Vector2 canvasSize) {
     super.onGameResize(canvasSize);
 
-    _ship.position = Vector2(canvasSize.x / 2, canvasSize.y - 100);
+    _ship?.position = Vector2(canvasSize.x / 2, canvasSize.y - 100);
   }
 }

@@ -14,10 +14,10 @@ class Rocket extends SpriteAnimationComponent with ChangeNotifier {
   }) : super(position: position, size: size) {
     final spriteSheet = SpriteSheet.fromColumnsAndRows(
       image: image,
-      rows: 5,
+      rows: 2,
       columns: 2,
     );
-    animation = spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed);
+    animation = spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed);
    }
 
   @override
