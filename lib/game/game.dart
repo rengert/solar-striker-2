@@ -8,6 +8,8 @@ import 'package:solarstriker/game/enemy.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
 
+import 'explosion.dart';
+
 class SolarStrikerGame extends FlameGame
     with HasCollidables {
   Ship? _ship;
@@ -47,10 +49,20 @@ class SolarStrikerGame extends FlameGame
     _ship?.stopAutoFire();
   }
 
+  void explode(Vector2 vector) {
+    var explosion = Explosion(
+        image: images.fromCache('explosion.png'),
+        size: Vector2(16, 16),
+        position: vector,
+    );
+    add(explosion);
+  }
+
   Future<void> _loadStuff() async {
     await images.loadAll([
       'desert-background-looped.png',
       'ship.png',
+      'explosion.png',
       'laser-bolts.png',
       'enemy-big.png'
     ]);

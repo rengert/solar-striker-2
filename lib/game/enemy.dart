@@ -22,6 +22,7 @@ class Enemy extends SpriteAnimationComponent
       columns: 2,
     );
     animation = spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed);
+    anchor = Anchor.center;
    }
 
   @override
@@ -46,6 +47,7 @@ class Enemy extends SpriteAnimationComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
     if (other is Rocket) {
+      gameRef.explode(position);
       gameRef.remove(this);
     }
     super.onCollision(intersectionPoints, other);
