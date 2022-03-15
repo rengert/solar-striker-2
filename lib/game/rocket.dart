@@ -10,22 +10,21 @@ class Rocket extends SpriteAnimationComponent
     with HasGameRef<SolarStrikerGame>, HasHitboxes, Collidable  {
   final double _animationSpeed = 0.125;
 
-  Rocket({
-    required Image image,
-    required Vector2 position,
-    required Vector2 size,
-  }) : super(position: position, size: size) {
-    final spriteSheet = SpriteSheet.fromColumnsAndRows(
-      image: image,
-      rows: 2,
-      columns: 2,
-    );
-    animation = spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed);
-   }
+  Rocket({ required Vector2 position })
+      : super(position: position, size: Vector2(16, 16)) {
+    //
+  }
 
   @override
   void onMount() {
     super.onMount();
+
+    final spriteSheet = SpriteSheet.fromColumnsAndRows(
+      image: gameRef.images.fromCache('laser-bolts.png'),
+      rows: 2,
+      columns: 2,
+    );
+    animation = spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed);
 
     final shape = HitboxCircle(normalizedRadius: 0.8);
     addHitbox(shape);

@@ -8,19 +8,23 @@ class Explosion extends SpriteAnimationComponent with HasGameRef<SolarStrikerGam
   final double _animationSpeed = 0.125;
 
   Explosion({
-    required Image image,
     required Vector2 position,
-    required Vector2 size,
-  }) : super(position: position, size: size) {
+  }) : super(position: position, size: Vector2(16, 16)) {
+    anchor = Anchor.center;
+   }
+
+   @override
+  void onMount() {
+    super.onMount();
+
     final spriteSheet = SpriteSheet.fromColumnsAndRows(
-      image: image,
+      image: gameRef.images.fromCache('explosion.png'),
       rows: 1,
       columns: 5,
     );
     animation = spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed, loop: false);
     animation!.onComplete = _end;
-    anchor = Anchor.center;
-   }
+  }
 
    void _end() {
     gameRef.remove(this);

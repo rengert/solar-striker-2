@@ -5,8 +5,10 @@ import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/foundation.dart';
 
+import 'game.dart';
+
 class Ship extends SpriteAnimationComponent
-    with HasHitboxes, Collidable {
+    with HasGameRef<SolarStrikerGame>, HasHitboxes, Collidable {
   final ValueChanged<Vector2> onFire;
 
   final double _animationSpeed = 0.125;
@@ -23,29 +25,13 @@ class Ship extends SpriteAnimationComponent
   double _sinceLastShot = 0;
 
   Ship({
-    required Image image,
     required Vector2 position,
-    required Vector2 size,
     required Vector2 maxPosition,
     required this.onFire,
-    
-  }) : super(position: position, size: size) {
-    final spriteSheet = SpriteSheet.fromColumnsAndRows(
-      image: image,
-      rows: 5,
-      columns: 2,
-    );
-
+  }) : super(position: position, size: Vector2(32, 32)) {
     _maxPosition = maxPosition;
+  }
 
-    _moveMuchLeft = spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed);
-    _moveLeft = spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed);
-    _moveStraight = spriteSheet.createAnimation(row: 2, stepTime: _animationSpeed);
-    _moveRight = spriteSheet.createAnimation(row: 3, stepTime: _animationSpeed);
-    _moveMuchRight = spriteSheet.createAnimation(row: 4, stepTime: _animationSpeed);
-
-    animation = _moveStraight;
-   }
 
   @override
   void update(double dt) {
@@ -66,6 +52,20 @@ class Ship extends SpriteAnimationComponent
   @override
   void onMount() {
     super.onMount();
+
+    final spriteSheet = SpriteSheet.fromColumnsAndRows(
+      image: gameRef.images.fromCache('ship.png'),
+      rows: 5,
+      columns: 2,
+    );
+
+    _moveMuchLeft = spriteSheet.createAnimation(row: 0, stepTime: _animationSpeed);
+    _moveLeft = spriteSheet.createAnimation(row: 1, stepTime: _animationSpeed);
+    _moveStraight = spriteSheet.createAnimation(row: 2, stepTime: _animationSpeed);
+    _moveRight = spriteSheet.createAnimation(row: 3, stepTime: _animationSpeed);
+    _moveMuchRight = spriteSheet.createAnimation(row: 4, stepTime: _animationSpeed);
+
+    animation = _moveStraight;
 
     final shape = HitboxCircle(normalizedRadius: 0.8);
     addHitbox(shape);

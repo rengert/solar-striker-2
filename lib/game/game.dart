@@ -51,8 +51,6 @@ class SolarStrikerGame extends FlameGame
 
   void explode(Vector2 vector) {
     var explosion = Explosion(
-        image: images.fromCache('explosion.png'),
-        size: Vector2(16, 16),
         position: vector,
     );
     add(explosion);
@@ -70,8 +68,6 @@ class SolarStrikerGame extends FlameGame
 
   void _addShip() {
     _ship = Ship(
-        image: images.fromCache('ship.png'),
-        size: Vector2(32, 32),
         position: Vector2(canvasSize.x / 2, canvasSize.y - 150),
         maxPosition: canvasSize,
         onFire: _shipFired
@@ -104,8 +100,6 @@ class SolarStrikerGame extends FlameGame
 
   void _shipFired(Vector2 position) {
     var rocket = Rocket(
-        image: images.fromCache('laser-bolts.png'),
-        size: Vector2(16, 16),
         position: Vector2(_ship!.x + 8, _ship!.y - 20),
     );
     add(rocket);
