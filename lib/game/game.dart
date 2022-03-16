@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:solarstriker/game/enemy.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
@@ -13,8 +14,12 @@ import 'explosion.dart';
 class SolarStrikerGame extends FlameGame
     with HasCollidables {
   Ship? _ship;
-
   double _sinceLastEnemy = 0;
+  int _playerScore = 0;
+  int _level = 1;
+  late TextComponent _playerScoreText;
+  late TextComponent _levelText;
+
 
   @override
   Future<void> onLoad() async {
@@ -22,6 +27,7 @@ class SolarStrikerGame extends FlameGame
 
     await _loadStuff();
     await _addBackground();
+    _loadScreen();
     _addShip();
   }
 
@@ -30,7 +36,7 @@ class SolarStrikerGame extends FlameGame
     super.update(dt);
 
     _sinceLastEnemy += dt;
-    if(_sinceLastEnemy > 5) {
+    if(_sinceLastEnemy > 5 - (_level / 10)) {
       _sinceLastEnemy = 0;
 
       _spawnEnemy();
@@ -46,7 +52,7 @@ class SolarStrikerGame extends FlameGame
   }
 
   void stopFire() {
-    _ship?.stopAutoFire();
+    // _ship?.stopAutoFire();
   }
 
   void explode(Vector2 vector) {
@@ -77,10 +83,12 @@ class SolarStrikerGame extends FlameGame
 
   void _spawnEnemy() {
     var random = Random();
+    var speed = 15 + _level;
     var enemy = Enemy(
       image: images.fromCache('enemy-big.png'),
       size: Vector2(32, 32),
       position: Vector2(random.nextDouble() * canvasSize.x, 0),
+      speed: speed
     );
     add(enemy);
   }
@@ -105,10 +113,46 @@ class SolarStrikerGame extends FlameGame
     add(rocket);
   }
 
+  void _loadScreen() {
+    // Create text component for player score.
+    _playerScoreText = TextComponent(
+      text: 'Score: 0',
+      position: Vector2(10, 20),
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontFamily: 'BungeeInline',
+        ),
+      ),
+    );
+    add(_playerScoreText);
+
+    _levelText = TextComponent(
+      text: 'Level: 1',
+      position: Vector2(canvasSize.x - 20, 20),
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontFamily: 'BungeeInline',
+        ),
+      ),
+    );
+    _levelText.anchor = Anchor.topRight;
+    add(_levelText);
+  }
+
   @override
   void onGameResize(Vector2 canvasSize) {
     super.onGameResize(canvasSize);
 
     _ship?.position = Vector2(canvasSize.x / 2, canvasSize.y - 100);
+  }
+
+  void killed() {
+    _playerScore++;
+    _playerScoreText.text = 'Score: ' + _playerScore.toStringAsFixed(0);
+    _level = (_playerScore / 25).floor();
   }
 }
