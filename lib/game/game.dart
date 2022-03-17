@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:solarstriker/game/enemy.dart';
 import 'package:solarstriker/game/rocket.dart';
@@ -17,9 +16,11 @@ class SolarStrikerGame extends FlameGame
   double _sinceLastEnemy = 0;
   int _playerScore = 0;
   int _level = 1;
+  int _lifes = 3;
+
   late TextComponent _playerScoreText;
   late TextComponent _levelText;
-
+  late TextComponent _lifesText;
 
   @override
   Future<void> onLoad() async {
@@ -117,7 +118,7 @@ class SolarStrikerGame extends FlameGame
     // Create text component for player score.
     _playerScoreText = TextComponent(
       text: 'Score: 0',
-      position: Vector2(10, 20),
+      position: Vector2(10, 50),
       textRenderer: TextPaint(
         style: const TextStyle(
           color: Colors.white,
@@ -130,7 +131,7 @@ class SolarStrikerGame extends FlameGame
 
     _levelText = TextComponent(
       text: 'Level: 1',
-      position: Vector2(canvasSize.x - 20, 20),
+      position: Vector2(canvasSize.x - 20, 50),
       textRenderer: TextPaint(
         style: const TextStyle(
           color: Colors.white,
@@ -141,6 +142,20 @@ class SolarStrikerGame extends FlameGame
     );
     _levelText.anchor = Anchor.topRight;
     add(_levelText);
+
+    _lifesText = TextComponent(
+      text: 'Leben: 1',
+      position: Vector2(canvasSize.x - 20, 70),
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontFamily: 'BungeeInline',
+        ),
+      ),
+    );
+    _lifesText.anchor = Anchor.topRight;
+    add(_lifesText);
   }
 
   @override
@@ -153,6 +168,15 @@ class SolarStrikerGame extends FlameGame
   void killed() {
     _playerScore++;
     _playerScoreText.text = 'Score: ' + _playerScore.toStringAsFixed(0);
-    _level = (_playerScore / 25).floor();
+    _level = (_playerScore / 25).ceil();
+    _levelText.text = 'Level: ' + _level.toStringAsFixed(0);
+  }
+
+  void shipHit() {
+    _lifes--;
+    _lifesText.text = "Leben: " + _lifes.toStringAsFixed(0);
+    if(_lifes == 0) {
+      // tot
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/foundation.dart';
+import 'package:solarstriker/game/enemy.dart';
 
 import 'game.dart';
 
@@ -101,5 +102,16 @@ class Ship extends SpriteAnimationComponent
     } else {
       animation = _moveStraight;
     }
+  }
+
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
+    if (other is Enemy) {
+      gameRef.explode(position);
+      gameRef.shipHit();
+      other.hit();
+    }
+    super.onCollision(intersectionPoints, other);
   }
 }
