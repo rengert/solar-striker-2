@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:solarstriker/game/game.dart';
 import 'interaction/joypad.dart';
 import 'models/direction.dart';
+import 'overlays/pause.dart';
+import 'overlays/pause_menu.dart';
 
 class MainGamePage extends StatefulWidget {
   const MainGamePage({Key? key}) : super(key: key);
@@ -22,7 +24,20 @@ class MainGameState extends State<MainGamePage> {
         backgroundColor: const Color.fromRGBO(125, 125, 255, 1),
         body: Stack(
           children: [
-            GameWidget(game: game),
+            GameWidget(
+                game: game,
+                initialActiveOverlays: const [PauseButton.ID],
+                overlayBuilderMap: {
+                  PauseButton.ID: (BuildContext context, SolarStrikerGame gameRef) =>
+                      PauseButton(
+                        gameRef: gameRef,
+                      ),
+                  PauseMenu.ID: (BuildContext context, SolarStrikerGame gameRef) =>
+                      PauseMenu(
+                        gameRef: gameRef,
+                      ),
+                },
+              ),
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
