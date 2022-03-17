@@ -175,8 +175,8 @@ class SolarStrikerGame extends FlameGame
   void shipHit() {
     _lifes--;
     _lifesText.text = "Leben: " + _lifes.toStringAsFixed(0);
-    if(_lifes == 0) {
-      // tot
+    if(_lifes <= 0) {
+      pauseEngine();
     }
   }
 }
