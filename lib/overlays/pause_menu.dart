@@ -54,7 +54,7 @@ class PauseMenu extends StatelessWidget {
               onPressed: () {
                 gameRef.overlays.remove(PauseMenu.ID);
                 gameRef.overlays.add(PauseButton.ID);
-                //gameRef.reset();
+                gameRef.reset();
                 gameRef.resumeEngine();
               },
               child: const Text('Neustart'),

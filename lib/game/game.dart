@@ -167,16 +167,35 @@ class SolarStrikerGame extends FlameGame
 
   void killed() {
     _playerScore++;
-    _playerScoreText.text = 'Score: ' + _playerScore.toStringAsFixed(0);
     _level = (_playerScore / 25).ceil();
-    _levelText.text = 'Level: ' + _level.toStringAsFixed(0);
+    _updateScreen();
   }
 
   void shipHit() {
     _lifes--;
-    _lifesText.text = "Leben: " + _lifes.toStringAsFixed(0);
+    _updateScreen();
     if(_lifes <= 0) {
       pauseEngine();
     }
+  }
+
+  void reset() {
+    _level = 1;
+    _lifes = 3;
+    _playerScore = 0;
+    _sinceLastEnemy = 0;
+
+    children.forEach((element) {
+      if(element is Enemy || element is Rocket) {
+        element.removeFromParent();
+      }
+    });
+    _updateScreen();
+  }
+
+  void _updateScreen() {
+    _lifesText.text = "Leben: " + _lifes.toStringAsFixed(0);
+    _playerScoreText.text = 'Score: ' + _playerScore.toStringAsFixed(0);
+    _levelText.text = 'Level: ' + _level.toStringAsFixed(0);
   }
 }
