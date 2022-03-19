@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:solarstriker/game/enemy.dart';
+import 'package:solarstriker/game/power_up.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
 
@@ -69,7 +70,8 @@ class SolarStrikerGame extends FlameGame
       'ship.png',
       'explosion.png',
       'laser-bolts.png',
-      'enemy-big.png'
+      'enemy-big.png',
+      'power-up.png'
     ]);
   }
 
@@ -92,6 +94,16 @@ class SolarStrikerGame extends FlameGame
       speed: speed
     );
     add(enemy);
+  }
+
+  void _spawnPowerUp(Vector2 position) {
+    var random = Random();
+    if(random.nextDouble() < 0.1) {
+      add(PowerUp(
+        position: position,
+        type: random.nextDouble() > 0.5 ? PowerUpType.power : PowerUpType.speed
+      ));
+    }
   }
 
   Future<void> _addBackground() async {
@@ -165,10 +177,11 @@ class SolarStrikerGame extends FlameGame
     _ship?.position = Vector2(canvasSize.x / 2, canvasSize.y - 100);
   }
 
-  void killed() {
+  void killed(Vector2 position) {
     _playerScore++;
-    _level = (_playerScore / 25).ceil();
+    _level = (_playerScore / 10).ceil();
     _updateScreen();
+    _spawnPowerUp(position);
   }
 
   void shipHit() {
@@ -185,11 +198,11 @@ class SolarStrikerGame extends FlameGame
     _playerScore = 0;
     _sinceLastEnemy = 0;
 
-    children.forEach((element) {
+    for (var element in children) {
       if(element is Enemy || element is Rocket) {
         element.removeFromParent();
       }
-    });
+    }
     _updateScreen();
   }
 
