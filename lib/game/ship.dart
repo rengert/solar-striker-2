@@ -129,4 +129,9 @@ class Ship extends SpriteAnimationComponent
         break;
     }
   }
+
+  void reset() {
+    _fireSpeed = 1;
+    _firePower = 1;
+  }
 }

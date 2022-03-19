@@ -207,10 +207,11 @@ class SolarStrikerGame extends FlameGame
     _sinceLastEnemy = 0;
 
     for (var element in children) {
-      if(element is Enemy || element is Rocket) {
+      if(element is Enemy || element is Rocket || element is PowerUp) {
         element.removeFromParent();
       }
     }
+    _ship!.reset();
     _updateScreen();
   }
 
