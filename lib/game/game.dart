@@ -9,6 +9,7 @@ import 'package:solarstriker/game/power_up.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
 
+import '../models/shot.dart';
 import 'explosion.dart';
 
 class SolarStrikerGame extends FlameGame
@@ -119,11 +120,18 @@ class SolarStrikerGame extends FlameGame
     add(_background);
   }
 
-  void _shipFired(Vector2 position) {
-    var rocket = Rocket(
-        position: Vector2(_ship!.x + 8, _ship!.y - 20),
-    );
-    add(rocket);
+  void _shipFired(Shot shot) {
+    for(int i = 0; i < shot.power; i++) {
+      var x = ((shot.power == 1) || (shot.power == 3 && i == 2))
+        ? shot.position.x + 8
+        : (shot.power > 1 && i == 1)
+          ? shot.position.x
+          : shot.position.x + 16;
+      var rocket = Rocket(
+        position: Vector2(x, shot.position.y - 20),
+      );
+      add(rocket);
+    }
   }
 
   void _loadScreen() {

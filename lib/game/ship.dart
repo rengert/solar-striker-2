@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
@@ -5,15 +6,16 @@ import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/foundation.dart';
 import 'package:solarstriker/game/enemy.dart';
+import 'package:solarstriker/game/power_up.dart';
 
+import '../models/shot.dart';
 import 'game.dart';
 
 class Ship extends SpriteAnimationComponent
     with HasGameRef<SolarStrikerGame>, HasHitboxes, Collidable {
-  final ValueChanged<Vector2> onFire;
+  final ValueChanged<Shot> onFire;
 
   final double _animationSpeed = 0.125;
-  bool _autoFire = false;
   late SpriteAnimation _moveMuchLeft;
   late SpriteAnimation _moveLeft;
   late SpriteAnimation _moveStraight;
@@ -21,8 +23,10 @@ class Ship extends SpriteAnimationComponent
   late SpriteAnimation _moveMuchRight;
   late Vector2 _maxPosition = Vector2.zero();
 
+  double _fireSpeed = 1;
+  double _firePower = 1;
+  bool _autoFire = false;
   Vector2 _moveDirection = Vector2.zero();
-
   double _sinceLastShot = 0;
 
   Ship({
@@ -43,9 +47,9 @@ class Ship extends SpriteAnimationComponent
 
     _sinceLastShot += dt;
     if(_autoFire) {
-      if(_sinceLastShot > .175) {
+      if(_sinceLastShot > _fireSpeed) {
         _sinceLastShot = 0;
-        _fire();
+        _fire(_firePower);
       }
     }
   }
@@ -86,8 +90,8 @@ class Ship extends SpriteAnimationComponent
     _autoFire = false;
   }
 
-  void _fire() {
-    onFire(position);
+  void _fire(double power) {
+    onFire(Shot(power, position));
   }
 
   void _setDirection(Offset offset) {
@@ -113,5 +117,16 @@ class Ship extends SpriteAnimationComponent
       other.hit();
     }
     super.onCollision(intersectionPoints, other);
+  }
+
+  void powerUp(PowerUpType type) {
+    switch(type) {
+      case PowerUpType.power:
+        _firePower = min(3, _firePower + 1);
+        break;
+      case PowerUpType.speed:
+        _fireSpeed = _fireSpeed * 0.95;
+        break;
+    }
   }
 }

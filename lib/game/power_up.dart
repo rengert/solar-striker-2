@@ -14,16 +14,15 @@ enum PowerUpType {
 class PowerUp extends SpriteAnimationComponent
     with HasGameRef<SolarStrikerGame>, HasHitboxes, Collidable {
 
+  PowerUpType type;
   final double _animationSpeed = 0.125;
   final int _speed = 5;
-  late PowerUpType _type;
 
   PowerUp({
     required Vector2 position,
-    required PowerUpType type,
+    required this.type,
   }) : super(position: position, size: Vector2(16, 16)) {
     anchor = Anchor.center;
-    _type = type;
   }
 
   @override
@@ -35,7 +34,7 @@ class PowerUp extends SpriteAnimationComponent
       rows: 2,
       columns: 2,
     );
-    animation = spriteSheet.createAnimation(row: _type.index, stepTime: _animationSpeed);
+    animation = spriteSheet.createAnimation(row: type.index, stepTime: _animationSpeed);
 
     final shape = HitboxCircle(normalizedRadius: 0.8);
     addHitbox(shape);
@@ -55,7 +54,7 @@ class PowerUp extends SpriteAnimationComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
     if (other is Ship) {
-      print('collected');
+      other.powerUp(type);
       hit();
     }
     super.onCollision(intersectionPoints, other);
