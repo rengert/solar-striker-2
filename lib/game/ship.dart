@@ -42,7 +42,7 @@ class Ship extends SpriteAnimationComponent
   void update(double dt) {
     super.update(dt);
 
-    position += _moveDirection * 5 * dt;
+    position += _moveDirection * 10 * dt;
     position.clamp(Vector2.zero() - size / 2, _maxPosition - size / 2);
 
     _sinceLastShot += dt;

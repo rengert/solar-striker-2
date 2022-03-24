@@ -97,7 +97,7 @@ class SolarStrikerGame extends FlameGame
 
   void _spawnEnemy() {
     var random = Random();
-    var speed = 15 + _level;
+    var speed = 20 + _level;
     var enemy = Enemy(
       image: images.fromCache('enemy-big.png'),
       size: Vector2(32, 32),
@@ -124,7 +124,7 @@ class SolarStrikerGame extends FlameGame
       ],
       fill:  LayerFill.width,
       repeat: ImageRepeat.repeat,
-      baseVelocity: Vector2(0, -50),
+      baseVelocity: Vector2(0, -10),
       velocityMultiplierDelta: Vector2(0, 1.5),
     );
     add(_background);

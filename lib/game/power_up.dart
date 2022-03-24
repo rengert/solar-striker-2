@@ -16,7 +16,7 @@ class PowerUp extends SpriteAnimationComponent
 
   PowerUpType type;
   final double _animationSpeed = 0.125;
-  final int _speed = 5;
+  final int _speed = 7;
 
   PowerUp({
     required Vector2 position,
