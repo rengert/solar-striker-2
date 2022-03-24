@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:solarstriker/overlays/pause.dart';
+import 'package:solarstriker/screens/main_menu.dart';
 
 import '../../game/game.dart';
 
@@ -67,13 +68,13 @@ class PauseMenu extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 gameRef.overlays.remove(PauseMenu.ID);
-                //gameRef.reset();
+                gameRef.reset();
 
-                /*Navigator.of(context).pushReplacement(
+                Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const MainMenu(),
                   ),
-                );*/
+                );
               },
               child: const Text('Kampf abbrechen'),
             ),

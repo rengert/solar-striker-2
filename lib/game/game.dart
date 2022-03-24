@@ -4,11 +4,13 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:solarstriker/game/enemy.dart';
 import 'package:solarstriker/game/power_up.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
 
+import '../models/settings.dart';
 import '../models/shot.dart';
 import 'explosion.dart';
 
@@ -24,6 +26,12 @@ class SolarStrikerGame extends FlameGame
   late TextComponent _levelText;
   late TextComponent _lifesText;
 
+  SolarStrikerGame(BuildContext context): super() {
+    if(Provider.of<Settings>(context, listen: false).backgroundMusic) {
+      print("Hier könnte ihre Musik spielen");
+    }
+  }
+
   @override
   Future<void> onLoad() async {
     super.onLoad();
@@ -32,6 +40,8 @@ class SolarStrikerGame extends FlameGame
     await _addBackground();
     _loadScreen();
     _addShip();
+
+
   }
 
   @override

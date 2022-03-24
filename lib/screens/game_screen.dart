@@ -3,23 +3,24 @@ import 'dart:ui';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:solarstriker/game/game.dart';
-import 'interaction/joypad.dart';
-import 'models/direction.dart';
-import 'overlays/pause.dart';
-import 'overlays/pause_menu.dart';
+import '../interaction/joypad.dart';
+import '../models/direction.dart';
+import '../overlays/pause.dart';
+import '../overlays/pause_menu.dart';
 
-class MainGamePage extends StatefulWidget {
-  const MainGamePage({Key? key}) : super(key: key);
+class GameScreen extends StatefulWidget {
+  const GameScreen({Key? key}) : super(key: key);
 
   @override
-  MainGameState createState() => MainGameState();
+  GameScreenState createState() => GameScreenState();
 }
 
-class MainGameState extends State<MainGamePage> {
-  var game = SolarStrikerGame();
+class GameScreenState extends State<GameScreen> {
+  late SolarStrikerGame game;
 
   @override
   Widget build(BuildContext context) {
+    game = SolarStrikerGame(context);
     return Scaffold(
         backgroundColor: const Color.fromRGBO(125, 125, 255, 1),
         body: Stack(
