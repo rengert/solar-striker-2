@@ -4,14 +4,13 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:solarstriker/game/enemy.dart';
 import 'package:solarstriker/game/power_up.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
 
-import '../models/settings.dart';
 import '../models/shot.dart';
+import 'audio.dart';
 import 'explosion.dart';
 
 class SolarStrikerGame extends FlameGame
@@ -25,12 +24,7 @@ class SolarStrikerGame extends FlameGame
   late TextComponent _playerScoreText;
   late TextComponent _levelText;
   late TextComponent _lifesText;
-
-  SolarStrikerGame(BuildContext context): super() {
-    if(Provider.of<Settings>(context, listen: false).backgroundMusic) {
-      print("Hier könnte ihre Musik spielen");
-    }
-  }
+  late AudioComponent _audio;
 
   @override
   Future<void> onLoad() async {
@@ -38,10 +32,23 @@ class SolarStrikerGame extends FlameGame
 
     await _loadStuff();
     await _addBackground();
+    _music();
     _loadScreen();
     _addShip();
+  }
 
+  @override
+  void onAttach() {
+    _audio.playBgm();
 
+    super.onAttach();
+  }
+
+  @override
+  void onDetach() {
+    _audio.playBgm();
+
+    super.onDetach();
   }
 
   @override
@@ -49,7 +56,7 @@ class SolarStrikerGame extends FlameGame
     super.update(dt);
 
     _sinceLastEnemy += dt;
-    if(_sinceLastEnemy > 5 - (_level / 10)) {
+    if(_sinceLastEnemy > 3 - (_level / 10)) {
       _sinceLastEnemy = 0;
 
       _spawnEnemy();
@@ -97,7 +104,7 @@ class SolarStrikerGame extends FlameGame
 
   void _spawnEnemy() {
     var random = Random();
-    var speed = 20 + _level;
+    var speed = 60 + _level * 2;
     var enemy = Enemy(
       image: images.fromCache('enemy-big.png'),
       size: Vector2(32, 32),
@@ -124,7 +131,7 @@ class SolarStrikerGame extends FlameGame
       ],
       fill:  LayerFill.width,
       repeat: ImageRepeat.repeat,
-      baseVelocity: Vector2(0, -10),
+      baseVelocity: Vector2(0, -15),
       velocityMultiplierDelta: Vector2(0, 1.5),
     );
     add(_background);
@@ -229,5 +236,10 @@ class SolarStrikerGame extends FlameGame
     _lifesText.text = "Leben: " + _lifes.toStringAsFixed(0);
     _playerScoreText.text = 'Score: ' + _playerScore.toStringAsFixed(0);
     _levelText.text = 'Level: ' + _level.toStringAsFixed(0);
+  }
+
+  void _music() {
+    _audio = AudioComponent();
+    add(_audio);
   }
 }

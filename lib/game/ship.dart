@@ -23,7 +23,7 @@ class Ship extends SpriteAnimationComponent
   late SpriteAnimation _moveMuchRight;
   late Vector2 _maxPosition = Vector2.zero();
 
-  double _fireSpeed = 1;
+  double _fireSpeed = 0.5;
   double _firePower = 1;
   bool _autoFire = false;
   Vector2 _moveDirection = Vector2.zero();

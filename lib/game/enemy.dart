@@ -10,7 +10,7 @@ class Enemy extends SpriteAnimationComponent
     with HasGameRef<SolarStrikerGame>, HasHitboxes, Collidable {
 
   final double _animationSpeed = 0.125;
-  late int _speed = 15;
+  late int _speed = 25;
 
   Enemy({
     required Image image,

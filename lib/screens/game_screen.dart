@@ -20,7 +20,7 @@ class GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    game = SolarStrikerGame(context);
+    game = SolarStrikerGame();
     return Scaffold(
         backgroundColor: const Color.fromRGBO(125, 125, 255, 1),
         body: Stack(
