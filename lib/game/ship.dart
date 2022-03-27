@@ -33,7 +33,7 @@ class Ship extends SpriteAnimationComponent
     required Vector2 position,
     required Vector2 maxPosition,
     required this.onFire,
-  }) : super(position: position, size: Vector2(32, 32)) {
+  }) : super(position: position, size: Vector2(16, 24)) {
     _maxPosition = maxPosition;
   }
 

@@ -88,6 +88,8 @@ class SolarStrikerGame extends FlameGame
       'ship.png',
       'explosion.png',
       'laser-bolts.png',
+      'enemy-small.png',
+      'enemy-medium.png',
       'enemy-big.png',
       'power-up.png'
     ]);
@@ -104,9 +106,16 @@ class SolarStrikerGame extends FlameGame
 
   void _spawnEnemy() {
     var random = Random();
+    var type = EnemyType.small;
+    var typeRandom = random.nextDouble();
+    if(typeRandom > 0.9) {
+      type = EnemyType.big;
+    } else if(typeRandom > 0.7) {
+      type = EnemyType.medium;
+    }
     var speed = 60 + _level * 2;
     var enemy = Enemy(
-      image: images.fromCache('enemy-big.png'),
+      type: type,
       size: Vector2(32, 32),
       position: Vector2(random.nextDouble() * canvasSize.x, 0),
       speed: speed
