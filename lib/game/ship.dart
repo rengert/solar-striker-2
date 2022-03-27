@@ -6,6 +6,7 @@ import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/foundation.dart';
 import 'package:solarstriker/game/enemy.dart';
+import 'package:solarstriker/game/fireball.dart';
 import 'package:solarstriker/game/power_up.dart';
 
 import '../models/shot.dart';
@@ -111,10 +112,13 @@ class Ship extends SpriteAnimationComponent
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
-    if (other is Enemy) {
+    if (other is Enemy || other is Fireball) {
       gameRef.explode(position);
       gameRef.shipHit();
-      other.hit();
+
+      if(other is Enemy) {
+        other.hit(position);
+      }
     }
     super.onCollision(intersectionPoints, other);
   }

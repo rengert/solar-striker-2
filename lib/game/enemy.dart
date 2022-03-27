@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
+import 'package:solarstriker/game/fireball.dart';
 import 'package:solarstriker/game/game.dart';
 import 'package:solarstriker/game/rocket.dart';
 
@@ -72,6 +75,13 @@ class Enemy extends SpriteAnimationComponent
 
     if(position.y > 2000) {
       position = Vector2(position.x, 0);
+    }
+
+
+    var random = Random();
+    if(random.nextDouble() > 0.995) {
+      var fireball = Fireball(position: position);
+      gameRef.add(fireball);
     }
   }
 
