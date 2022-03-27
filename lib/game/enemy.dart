@@ -78,13 +78,13 @@ class Enemy extends SpriteAnimationComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
     if (other is Rocket) {
-      hit();
+      hit(other.position);
     }
     super.onCollision(intersectionPoints, other);
   }
 
-  void hit() {
-    gameRef.explode(position);
+  void hit(Vector2 hitPosition) {
+    gameRef.explode(hitPosition);
     _lifes--;
 
     if(_lifes <= 0) {
