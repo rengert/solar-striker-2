@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
@@ -18,6 +16,7 @@ class Enemy extends SpriteAnimationComponent
   final double _animationSpeed = 0.125;
   late int _speed = 25;
   late EnemyType _type = EnemyType.small;
+  late int _lifes = 1;
 
   Enemy({
     required EnemyType type,
@@ -39,14 +38,17 @@ class Enemy extends SpriteAnimationComponent
       case EnemyType.small:
         imageName = 'enemy-small.png';
         size = Vector2(16, 16);
+        _lifes = 1;
         break;
       case EnemyType.medium:
         imageName = 'enemy-medium.png';
         size = Vector2(32, 16);
+        _lifes = 2;
         break;
       case EnemyType.big:
         imageName = 'enemy-big.png';
         size = Vector2(32, 32);
+        _lifes = 3;
         break;
     }
 
@@ -77,13 +79,17 @@ class Enemy extends SpriteAnimationComponent
   void onCollision(Set<Vector2> intersectionPoints, Collidable other) {
     if (other is Rocket) {
       hit();
-      gameRef.killed(position);
     }
     super.onCollision(intersectionPoints, other);
   }
 
   void hit() {
     gameRef.explode(position);
-    gameRef.remove(this);
+    _lifes--;
+
+    if(_lifes <= 0) {
+      gameRef.killed(position);
+      gameRef.remove(this);
+    }
   }
 }
