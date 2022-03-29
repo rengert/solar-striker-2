@@ -44,6 +44,7 @@ class Fireball extends SpriteAnimationComponent
     if (other is Ship) {
       gameRef.remove(this);
     }
+
     super.onCollision(intersectionPoints, other);
   }
 }

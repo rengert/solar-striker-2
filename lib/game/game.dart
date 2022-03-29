@@ -5,9 +5,11 @@ import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:solarstriker/game/enemy.dart';
+import 'package:solarstriker/game/fireball.dart';
 import 'package:solarstriker/game/power_up.dart';
 import 'package:solarstriker/game/rocket.dart';
 import 'package:solarstriker/game/ship.dart';
+import 'package:solarstriker/overlays/dead_menu.dart';
 
 import '../models/shot.dart';
 import 'audio.dart';
@@ -17,7 +19,7 @@ class SolarStrikerGame extends FlameGame
     with HasCollidables {
   Ship? _ship;
   double _sinceLastEnemy = 0;
-  int _playerScore = 0;
+  int playerScore = 0;
   int _level = 1;
   int _lifes = 3;
 
@@ -212,8 +214,8 @@ class SolarStrikerGame extends FlameGame
   }
 
   void killed(Vector2 position) {
-    _playerScore++;
-    _level = (_playerScore / 10).ceil();
+    playerScore++;
+    _level = (playerScore / 10).ceil();
     _updateScreen();
     _spawnPowerUp(position);
   }
@@ -223,17 +225,18 @@ class SolarStrikerGame extends FlameGame
     _updateScreen();
     if(_lifes <= 0) {
       pauseEngine();
+      overlays.add(DeadMenu.ID);
     }
   }
 
   void reset() {
     _level = 1;
     _lifes = 3;
-    _playerScore = 0;
+    playerScore = 0;
     _sinceLastEnemy = 0;
 
     for (var element in children) {
-      if(element is Enemy || element is Rocket || element is PowerUp) {
+      if(element is Enemy || element is Rocket || element is PowerUp || element is Fireball) {
         element.removeFromParent();
       }
     }
@@ -243,7 +246,7 @@ class SolarStrikerGame extends FlameGame
 
   void _updateScreen() {
     _lifesText.text = "Leben: " + _lifes.toStringAsFixed(0);
-    _playerScoreText.text = 'Score: ' + _playerScore.toStringAsFixed(0);
+    _playerScoreText.text = 'Score: ' + playerScore.toStringAsFixed(0);
     _levelText.text = 'Level: ' + _level.toStringAsFixed(0);
   }
 

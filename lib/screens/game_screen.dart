@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:solarstriker/game/game.dart';
+import 'package:solarstriker/overlays/dead_menu.dart';
 import '../interaction/joypad.dart';
 import '../models/direction.dart';
 import '../overlays/pause.dart';
@@ -35,6 +36,10 @@ class GameScreenState extends State<GameScreen> {
                       ),
                   PauseMenu.ID: (BuildContext context, SolarStrikerGame gameRef) =>
                       PauseMenu(
+                        gameRef: gameRef,
+                      ),
+                  DeadMenu.ID: (BuildContext context, SolarStrikerGame gameRef) =>
+                      DeadMenu(
                         gameRef: gameRef,
                       ),
                 },
