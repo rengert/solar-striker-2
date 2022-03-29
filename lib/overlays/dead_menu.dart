@@ -18,7 +18,7 @@ class DeadMenu extends StatelessWidget {
         children: [
           // Pause menu title.
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 50.0),
+            padding: EdgeInsets.symmetric(vertical: 25.0),
             child: Text(
               'Kampf ist vorbei',
               style: TextStyle(
@@ -35,7 +35,7 @@ class DeadMenu extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50.0),
+            padding: const EdgeInsets.symmetric(vertical: 25.0),
             child: Text(
               'Punkte: '   + gameRef.playerScore.toStringAsFixed(0),
               style: const TextStyle(
