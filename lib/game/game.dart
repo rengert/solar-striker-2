@@ -1,0 +1,257 @@
+import 'dart:math';
+
+import 'package:flame/components.dart';
+import 'package:flame/game.dart';
+import 'package:flame/parallax.dart';
+import 'package:flutter/material.dart';
+import 'package:solarstriker/game/enemy.dart';
+import 'package:solarstriker/game/fireball.dart';
+import 'package:solarstriker/game/power_up.dart';
+import 'package:solarstriker/game/rocket.dart';
+import 'package:solarstriker/game/ship.dart';
+import 'package:solarstriker/overlays/dead_menu.dart';
+
+import '../models/shot.dart';
+import 'audio.dart';
+import 'explosion.dart';
+
+class SolarStrikerGame extends FlameGame
+    with HasCollidables {
+  Ship? _ship;
+  double _sinceLastEnemy = 0;
+  int playerScore = 0;
+  int _level = 1;
+  int _lifes = 3;
+
+  late TextComponent _playerScoreText;
+  late TextComponent _levelText;
+  late TextComponent _lifesText;
+  late AudioComponent _audio;
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+
+    await _loadStuff();
+    await _addBackground();
+    _music();
+    _loadScreen();
+    _addShip();
+  }
+
+  @override
+  void onAttach() {
+    _audio.playBgm();
+
+    super.onAttach();
+  }
+
+  @override
+  void onDetach() {
+    _audio.playBgm();
+
+    super.onDetach();
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    _sinceLastEnemy += dt;
+    if(_sinceLastEnemy > 3 - (_level / 10)) {
+      _sinceLastEnemy = 0;
+
+      _spawnEnemy();
+    }
+  }
+
+  void move(Offset delta) {
+    _ship?.move(delta);
+  }
+
+  void fire() {
+    _ship?.setAutoFire();
+  }
+
+  void stopFire() {
+    // _ship?.stopAutoFire();
+  }
+
+  void explode(Vector2 vector) {
+    var explosion = Explosion(
+        position: vector,
+    );
+    add(explosion);
+  }
+
+  Future<void> _loadStuff() async {
+    await images.loadAll([
+      'desert-background-looped.png',
+      'ship.png',
+      'explosion.png',
+      'laser-bolts.png',
+      'enemy-small.png',
+      'enemy-medium.png',
+      'enemy-big.png',
+      'power-up.png'
+    ]);
+  }
+
+  void _addShip() {
+    _ship = Ship(
+        position: Vector2(canvasSize.x / 2, canvasSize.y - 150),
+        maxPosition: canvasSize,
+        onFire: _shipFired
+    );
+    add(_ship!);
+  }
+
+  void _spawnEnemy() {
+    var random = Random();
+    var type = EnemyType.small;
+    var typeRandom = random.nextDouble();
+    if(typeRandom > 0.9) {
+      type = EnemyType.big;
+    } else if(typeRandom > 0.7) {
+      type = EnemyType.medium;
+    }
+    var speed = 60 + _level * 2;
+    var enemy = Enemy(
+      type: type,
+      size: Vector2(32, 32),
+      position: Vector2(random.nextDouble() * canvasSize.x, 0),
+      speed: speed
+    );
+    add(enemy);
+  }
+
+  void _spawnPowerUp(Vector2 position) {
+    var random = Random();
+    if(random.nextDouble() < 0.1) {
+      add(PowerUp(
+        position: position,
+        type: random.nextDouble() > 0.5 ? PowerUpType.power : PowerUpType.speed
+      ));
+    }
+  }
+
+  Future<void> _addBackground() async {
+    ParallaxComponent _background = await ParallaxComponent.load(
+      [
+        ParallaxImageData('desert-background-looped.png'),
+      ],
+      fill:  LayerFill.width,
+      repeat: ImageRepeat.repeat,
+      baseVelocity: Vector2(0, -15),
+      velocityMultiplierDelta: Vector2(0, 1.5),
+    );
+    add(_background);
+  }
+
+  void _shipFired(Shot shot) {
+    for(int i = 0; i < shot.power; i++) {
+      var x = ((shot.power == 1) || (shot.power == 3 && i == 2))
+        ? shot.position.x + 8
+        : (shot.power > 1 && i == 1)
+          ? shot.position.x
+          : shot.position.x + 16;
+      var rocket = Rocket(
+        position: Vector2(x, shot.position.y - 20),
+      );
+      add(rocket);
+    }
+  }
+
+  void _loadScreen() {
+    // Create text component for player score.
+    _playerScoreText = TextComponent(
+      text: 'Score: 0',
+      position: Vector2(10, 50),
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontFamily: 'BungeeInline',
+        ),
+      ),
+    );
+    add(_playerScoreText);
+
+    _levelText = TextComponent(
+      text: 'Level: 1',
+      position: Vector2(canvasSize.x - 20, 50),
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontFamily: 'BungeeInline',
+        ),
+      ),
+    );
+    _levelText.anchor = Anchor.topRight;
+    add(_levelText);
+
+    _lifesText = TextComponent(
+      text: 'Leben: 1',
+      position: Vector2(canvasSize.x - 20, 70),
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontFamily: 'BungeeInline',
+        ),
+      ),
+    );
+    _lifesText.anchor = Anchor.topRight;
+    add(_lifesText);
+  }
+
+  @override
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+
+    _ship?.position = Vector2(canvasSize.x / 2, canvasSize.y - 100);
+  }
+
+  void killed(Vector2 position) {
+    playerScore++;
+    _level = (playerScore / 10).ceil();
+    _updateScreen();
+    _spawnPowerUp(position);
+  }
+
+  void shipHit() {
+    _lifes--;
+    _updateScreen();
+    if(_lifes <= 0) {
+      pauseEngine();
+      overlays.add(DeadMenu.ID);
+    }
+  }
+
+  void reset() {
+    _level = 1;
+    _lifes = 3;
+    playerScore = 0;
+    _sinceLastEnemy = 0;
+
+    for (var element in children) {
+      if(element is Enemy || element is Rocket || element is PowerUp || element is Fireball) {
+        element.removeFromParent();
+      }
+    }
+    _ship!.reset();
+    _updateScreen();
+  }
+
+  void _updateScreen() {
+    _lifesText.text = "Leben: " + _lifes.toStringAsFixed(0);
+    _playerScoreText.text = 'Score: ' + playerScore.toStringAsFixed(0);
+    _levelText.text = 'Level: ' + _level.toStringAsFixed(0);
+  }
+
+  void _music() {
+    _audio = AudioComponent();
+    add(_audio);
+  }
+}
